@@ -21,3 +21,25 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
+
+
+def login_view(request):
+    _message = 'Log in'
+    if request.method == 'POST':
+        _username = request.POST['username']
+        _password = request.POST['password']
+        user = authenticate(username=_username, password=_password)
+        if user is not None:
+            if user.is_active:
+                login(request,user)
+                return redirect('index')
+            else:
+                _message = 'Your account is not activated'
+        else:
+            _message = 'Invalid login, please try again.'
+    context = {'message': _message}
+    return render(request, 'login.html', context)
+
+def logout_view(request):
+    logout(request)
+    return redirect('base')
